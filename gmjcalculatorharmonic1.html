@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMJ Harmonic Calculation</title>
+<style>
+    /* Add some basic styling */
+    input, output {
+        display: block;
+        margin-bottom: 10px;
+    }
+	
+	.outputFinal {
+        color: blue;
+        font-weight: bold;
+        font-size: larger;
+    }
+</style>
+</head>
+<body>
+
+	<form id="calculationForm1">
+        <label for="input1_1">KVA :</label>
+        <input type="number" id="input1_1" name="input1_1" required>
+        <label for="input2_1">Voltage 3 Phase :</label>
+        <input type="number" id="input2_1" name="input2_1" value="400" required>
+        <label for="input3_1">Power Factor (CosPhi):</label>
+        <input type="number" id="input3_1" name="input3_1" required>
+        <label for="input4_1">THDi (%):</label>
+        <input type="number" id="input4_1" name="input4_1" required min="0" max="100" step="0.01">
+        <br>
+        <output id="output1_1" class="output"></output>
+        <output id="output2_1" class="output"></output>
+        <output id="output3_1" class="output"></output>
+        <output id="output4_1" class="output"></output>
+        <output id="output5_1" class="outputFinal"></output>
+    </form>
+	<hr><br>
+	<form id="calculationForm2">
+        <label for="input1_2">Power(kW) :</label>
+        <input type="number" id="input1_2" name="input1_2" required>
+        <label for="input2_2">Voltage 3 Phase :</label>
+        <input type="number" id="input2_2" name="input2_2" value="400" required>
+        <label for="input3_2">Power Factor (CosPhi) :</label>
+        <input type="number" id="input3_2" name="input3_2" required>
+        <label for="input4_2">THDi (%) :</label>
+        <input type="number" id="input4_2" name="input4_2" required min="0" max="100" step="0.01">
+        <br>
+        <output id="output1_2" class="output"></output>
+        <output id="output2_2" class="output"></output>
+        <output id="output3_2" class="output"></output>
+        <output id="output4_2" class="outputFinal"></output>
+    </form>
+	<hr><br>
+    <form id="calculationForm3">
+        <label for="input1_3">Irms : </label>
+        <input type="number" id="input1_3" name="input1_3" required>
+        <label for="input2_3">THDi (%) :</label>
+        <input type="number" id="input2_3" name="input2_3" required>
+        <br>
+        <output id="output1_3" class="output"></output>
+        <output id="output2_3" class="output"></output>
+        <output id="output3_3" class="outputFinal"></output>
+    </form>
+	
+    <script>
+		const form1 = document.getElementById('calculationForm1');
+        const form2 = document.getElementById('calculationForm2');
+        const form3 = document.getElementById('calculationForm3');
+
+        form1.addEventListener('input', calculateForm1);
+        form2.addEventListener('input', calculateForm2);
+        form3.addEventListener('input', calculateForm3);
+		
+        function calculateForm1() {
+            const input1 = parseFloat(form1.input1_1.value);
+            const input2 = parseFloat(form1.input2_1.value);
+            const input3 = parseFloat(form1.input3_1.value);
+            const input4Percentage = parseFloat(form1.input4_1.value); // Get percentage value
+            const input4 = input4Percentage / 100; // Convert percentage to decimal
+
+            const output1 = (input1 * input3).toFixed(3); // Multiplication of input 1 and input 3
+            const output2 = ((output1 * 1000) / (1.73 * input2 * input3)).toFixed(3); // Formula for output 2
+            const output3 = (Math.sqrt(Math.pow(output2, 2) / 1.25)).toFixed(3); // Formula for output 3
+            const output4 = (input4 * output3).toFixed(3); // Formula for output 4
+            const output5 = (1.7 * output4).toFixed(3); // Formula for output 5
+
+            document.getElementById('output1_1').textContent = `Power(kW) : ${output1.toLocaleString()}`;
+            document.getElementById('output2_1').textContent = `Irms : ${output2}`;
+            document.getElementById('output3_1').textContent = `Ifund: ${output3}`;
+            document.getElementById('output4_1').textContent = `IHar : ${output4}`;
+            document.getElementById('output5_1').textContent = `AHF (Ampere) : ${output5}`;
+        }
+
+        function calculateForm2() {
+            const input1 = parseFloat(form2.input1_2.value);
+            const input2 = parseFloat(form2.input2_2.value);
+            const input3 = parseFloat(form2.input3_2.value);
+            const input4 = parseFloat(form2.input4_2.value) / 100; // Convert percentage to decimal
+
+            const output1 = ((input1 * 1000) / (1.73 * input2 * input3)).toFixed(3) 
+            const output2 = (Math.sqrt(Math.pow(output1, 2) / 1.25)).toFixed(3); 
+            const output3 = (input4 * output2).toFixed(3)
+            const output4 = (1.7 * output3).toFixed(3); 
+
+            document.getElementById('output1_2').textContent = `Irms : ${output1}`;
+            document.getElementById('output2_2').textContent = `Ifund: ${output2}`;
+            document.getElementById('output3_2').textContent = `IHar : ${output3}`;
+            document.getElementById('output4_2').textContent = `AHF (Ampere) : ${output4}`;
+        }
+
+        function calculateForm3() {
+            const input1 = parseFloat(form3.input1_3.value);
+            const input2 = parseFloat(form3.input2_3.value);
+
+            // Example calculations for output in form3
+            const output1 = (Math.sqrt(Math.pow(input1, 2) / 1.25)).toFixed(3); 
+            const output2 = (input2 * (output1 / 100)).toFixed(3);
+            const output3 = (1.7 * output2).toFixed(3); 
+
+            document.getElementById('output1_3').textContent = `Ifund : ${output1}`;
+            document.getElementById('output2_3').textContent = `IHar : ${output2}`;
+            document.getElementById('output3_3').textContent = `AHF (Ampere) : ${output3}`;
+        }
+    </script>
+</body>
+</html>
